@@ -1,0 +1,242 @@
+/*
+============================================
+--- Custom Styles & Color Palette ---
+============================================
+*/
+:root {
+    --primary-bg: #fff;           /* Pure white background */
+    --secondary-bg: #f7f7f7;      /* Light gray accent */
+    --text-accent: #222;          /* Near-black for text */
+    --button-highlight: #f1f1f1;  /* Subtle button background */
+    --hover-active: #e9e9e9;      /* Slightly darker for hover */
+    --dark-text: #222;            /* Near-black for strong contrast */
+}
+
+body {
+    background-color: var(--primary-bg);
+    color: var(--dark-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-control:focus {
+    border-color: var(--button-highlight);
+    box-shadow: 0 0 0 0.25rem rgba(34, 34, 34, 0.08);
+}
+
+/*
+============================================
+--- General & Utility Styles ---
+============================================
+*/
+.btn-custom {
+    background-color: var(--button-highlight);
+    border-color: var(--hover-active);
+    color: var(--dark-text);
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-custom:hover {
+    background-color: var(--hover-active);
+    border-color: var(--hover-active);
+    color: var(--dark-text);
+    transform: translateY(-2px);
+}
+
+.fade-in {
+    animation: fadeInAnimation 0.8s ease-in-out forwards;
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*
+============================================
+--- Landing Page: Header ---
+============================================
+*/
+.navbar {
+    background-color: var(--secondary-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.navbar-brand {
+    color: var(--dark-text);
+    font-weight: bold;
+}
+
+.nav-link {
+    color: var(--dark-text);
+}
+
+.nav-link:hover {
+    color: var(--hover-active);
+}
+
+/*
+============================================
+--- Landing Page: Carousel ---
+============================================
+*/
+.carousel-item {
+    height: 60vh;
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    background-color: var(--secondary-bg);
+}
+
+.carousel-item::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    opacity: 0.15;
+}
+
+.carousel-caption {
+    bottom: 3rem;
+    z-index: 1;
+    color: var(--dark-text);
+}
+
+/*
+============================================
+--- Landing Page: Features Section ---
+============================================
+*/
+.feature-icon {
+    font-size: 3rem;
+    color: var(--hover-active);
+}
+
+/*
+============================================
+--- Landing Page: Product Section ---
+============================================
+*/
+.product-section {
+    padding: 4rem 0;
+    background-color: var(--primary-bg);
+}
+
+.product-section h2 {
+    color: var(--dark-text);
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--hover-active);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.product-card {
+    background-color: var(--secondary-bg);
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    background-color: var(--hover-active);
+}
+
+.product-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    background: var(--hover-active);
+}
+
+.product-card .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card .card-title {
+    color: var(--dark-text);
+    font-weight: 600;
+}
+
+.product-card .card-text {
+    flex-grow: 1;
+}
+
+.product-price {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--dark-text);
+}
+
+/*
+============================================
+--- Landing Page: Footer ---
+============================================
+*/
+.footer {
+    background-color: var(--secondary-bg);
+    color: var(--dark-text);
+    padding: 3rem 0;
+    margin-top: 4rem;
+}
+
+.footer a {
+    color: var(--dark-text);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: var(--hover-active);
+}
+
+.social-icons i {
+    font-size: 1.5rem;
+    margin: 0 0.5rem;
+    transition: color 0.3s ease;
+    color: var(--hover-active);
+}
+
+/*
+============================================
+--- Login Modal ---
+============================================
+*/
+#loginModal .modal-content {
+    background-color: var(--primary-bg);
+    border: 1px solid var(--hover-active);
+    border-radius: 15px;
+}
+
+#loginModal .modal-header {
+    border-bottom-color: var(--secondary-bg);
+}
+
+.form-text-link {
+    color: var(--dark-text);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+.form-text-link:hover {
+    color: var(--hover-active);
+    text-decoration: underline;
+}
