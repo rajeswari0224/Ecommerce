@@ -51,7 +51,10 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="#electronics">Electronics</a></li>
-                                    <li><a class="dropdown-item" href="#apparel">Apparel</a></li>
+                                    <li><a class="dropdown-item" href="#apparel">Fashion</a></li>
+                                    <li><a class="dropdown-item" href="#home-kitchen">Home & Kitchen</a></li>
+                                    <li><a class="dropdown-item" href="#books">Books</a></li>
+                                    <li><a class="dropdown-item" href="#sports">Sports & Fitness</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#">About</a></li>
@@ -60,7 +63,14 @@
                             <input id="search-bar" class="form-control me-2" type="search" placeholder="Search for products..." aria-label="Search">
                         </form>
                         <ul class="navbar-nav mb-2 mb-lg-0">
-                            <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-cart-fill me-1"></i>Cart</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link position-relative" href="#" id="cart-icon" data-bs-toggle="modal" data-bs-target="#cartModal">
+                                    <i class="bi bi-cart-fill me-1"></i>Cart
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-badge" style="display: none;">
+                                        0
+                                    </span>
+                                </a>
+                            </li>
                             <li class="nav-item" id="login-nav-item">
                                 <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                             </li>
@@ -80,6 +90,66 @@
             </nav>
         </header>
 
+        <!-- Admin Product Form (conditionally rendered) -->
+        <section id="admin-form-section" class="py-4" style="display: none; background-color: var(--secondary-bg);">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Add New Product</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="form-alerts"></div>
+                                <form id="product-form">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="productName" class="form-label">Product Name</label>
+                                            <input type="text" class="form-control" id="productName" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="productCode" class="form-label">Product Code</label>
+                                            <input type="text" class="form-control" id="productCode" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="productCategory" class="form-label">Category</label>
+                                        <select class="form-select" id="productCategory" required>
+                                            <option value="">Select Category</option>
+                                            <option value="electronics">Electronics</option>
+                                            <option value="apparel">Fashion</option>
+                                            <option value="home-kitchen">Home & Kitchen</option>
+                                            <option value="books">Books</option>
+                                            <option value="sports">Sports & Fitness</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="productDescription" class="form-label">Description</label>
+                                        <textarea class="form-control" id="productDescription" rows="3" required></textarea>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="productPrice" class="form-label">Price (₹)</label>
+                                            <input type="number" class="form-control" id="productPrice" min="0" step="0.01" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="productImage" class="form-label">Image URL</label>
+                                            <input type="url" class="form-control" id="productImage" required>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-custom">
+                                            <i class="bi bi-plus-lg me-2"></i>Add Product
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Main Content -->
         <main>
             <!-- Hero Carousel -->
@@ -90,14 +160,14 @@
                     <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
                 <div class="carousel-inner">
-                    <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1513708927688-890a1e2b6e94?auto=format&fit=crop&w=1260&q=80')">
-                        <!-- Electronics Sale -->
+                    <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1260&q=80')">
+                        <!-- Fashion & Clothing -->
                     </div>
-                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1260&q=80')">
-                        <!-- Fashion/New Arrivals -->
+                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1260&q=80')">
+                        <!-- Shopping & Lifestyle -->
                     </div>
-                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1260&q=80')">
-                        <!-- Gadgets/Electronics Fest -->
+                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=1260&q=80')">
+                        <!-- Footwear Collection -->
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
@@ -139,203 +209,115 @@
                     <!-- Category: Electronics -->
                     <div class="text-center mb-5">
                         <h2>Electronics</h2>
-                        <p class="lead text-muted">The latest and greatest in modern technology.</p>
+                        <p class="lead text-muted typewriter">The latest and greatest in modern technology.</p>
                     </div>
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="product-list-electronics">
-                        <!-- Product Card Example -->
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1505740420928-5e59002b4d4e?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Wireless Headphones" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Wireless Headphones</h5>
-                                    <p class="card-text text-muted">High-fidelity sound and noise cancellation.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$149.99</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Smartwatch Pro" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Smartwatch Pro</h5>
-                                    <p class="card-text text-muted">Track your fitness and stay connected on the go.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$299.99</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Ultra-Slim Laptop" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Ultra-Slim Laptop</h5>
-                                    <p class="card-text text-muted">Powerful performance in a sleek, portable design.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$1299.00</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1507582020474-9a334a761916?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Drone" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">4K Camera Drone</h5>
-                                    <p class="card-text text-muted">Capture stunning aerial footage with ease.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$499.50</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="VR Headset" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Immersive VR Headset</h5>
-                                    <p class="card-text text-muted">Step into new worlds with virtual reality.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$399.00</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1589100376829-4b75341258a8?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Bluetooth Speaker" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Portable Speaker</h5>
-                                    <p class="card-text text-muted">Rich, room-filling sound wherever you are.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$89.99</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3" id="product-list-electronics">
+                        <!-- Products will be loaded from backend -->
                     </div>
                 </div>
             </section>
 
-            <section id="apparel" class="product-section" style="background-color: var(--primary-bg);">
+            <section id="apparel" class="product-section" style="background-color: var(--secondary-bg);">
                 <div class="container">
-                    <!-- Category: Apparel -->
-                    <div class="text-center mb-5">
-                        <h2>Apparel</h2>
-                        <p class="lead text-muted">Dress to impress with our curated fashion collection.</p>
+                    <div class="text-center mb-4">
+                        <h2>Fashion</h2>
+                        <p class="lead text-muted typewriter">Trendy styles for every occasion</p>
                     </div>
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="product-list-apparel">
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Classic Denim Jacket" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Classic Denim Jacket</h5>
-                                    <p class="card-text text-muted">A timeless wardrobe staple for any season.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$79.99</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Floral Summer Dress" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Floral Summer Dress</h5>
-                                    <p class="card-text text-muted">Light and breezy, perfect for sunny days.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$59.99</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1603579329332-968a8093d4a4?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Leather Ankle Boots" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Leather Ankle Boots</h5>
-                                    <p class="card-text text-muted">Handcrafted from genuine leather for style and comfort.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$189.00</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1588106269447-a3fb4d433b63?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Cozy Knit Sweater" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Cozy Knit Sweater</h5>
-                                    <p class="card-text text-muted">Stay warm and stylish in this soft-touch sweater.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$65.00</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Organic Cotton T-Shirt" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Organic Cotton T-Shirt</h5>
-                                    <p class="card-text text-muted">A basic essential, made from 100% organic cotton.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$24.99</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col product-item">
-                            <div class="card product-card h-100">
-                                <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img-top" alt="Aviator Sunglasses" style="object-fit:cover; width:100%; height:400px;">
-                                <div class="card-body">
-                                    <h5 class="card-title">Aviator Sunglasses</h5>
-                                    <p class="card-text text-muted">Protect your eyes with these iconic UV-blocking shades.</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                                        <p class="product-price mb-0">$119.50</p>
-                                        <a href="#" class="btn btn-custom">Add to Cart</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3" id="product-list-apparel">
+                        <!-- Products will be loaded from backend -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Home & Kitchen Section -->
+            <section id="home-kitchen" class="product-section">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <h2>Home & Kitchen</h2>
+                        <p class="lead text-muted typewriter">Essential items for your home</p>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+                        <!-- Products will be loaded from backend -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Books Section -->
+            <section id="books" class="product-section" style="background-color: var(--secondary-bg);">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <h2>Books</h2>
+                        <p class="lead text-muted typewriter">Knowledge and entertainment for all</p>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+                        <!-- Products will be loaded from backend -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sports & Fitness Section -->
+            <section id="sports" class="product-section">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <h2>Sports & Fitness</h2>
+                        <p class="lead text-muted typewriter">Stay active and healthy</p>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
+                        <!-- Products will be loaded from backend -->
                     </div>
                 </div>
             </section>
         </main>
 
         <!-- Footer -->
-        <footer class="footer">
+        <footer class="modern-footer">
             <div class="container">
-                <div class="row gy-3 text-center text-md-start">
-                    <div class="col-md-4">
-                        <h5>EchoCart</h5>
-                        <p class="text-muted small">Your one-stop shop for the best products online. &copy; 2024 EchoCart. All Rights Reserved.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h5>Contact Us</h5>
-                        <p>Email: support@echoCart.com<br>Phone: (123) 456-7890</p>
-                    </div>
-                    <div class="col-md-4">
-                        <h5>Follow Us</h5>
-                        <div class="social-icons">
-                            <a href="#"><i class="bi bi-twitter-x"></i></a>
-                            <a href="#"><i class="bi bi-facebook"></i></a>
-                            <a href="#"><i class="bi bi-instagram"></i></a>
-                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                <div class="row gy-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <h4 class="mb-3">EchoCart</h4>
+                            <p class="footer-desc">Your trusted partner for premium products and exceptional shopping experience.</p>
+                            <div class="social-links">
+                                <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+                                <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
+                                <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                                <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+                            </div>
                         </div>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <h6 class="footer-title">Shop</h6>
+                        <ul class="footer-links">
+                            <li><a href="#electronics">Electronics</a></li>
+                            <li><a href="#apparel">Fashion</a></li>
+                            <li><a href="#home-kitchen">Home & Kitchen</a></li>
+                            <li><a href="#books">Books</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <h6 class="footer-title">Support</h6>
+                        <ul class="footer-links">
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Shipping Info</a></li>
+                            <li><a href="#">Returns</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <h6 class="footer-title">Stay Updated</h6>
+                        <p class="footer-desc mb-3">Subscribe to get special offers and updates.</p>
+                        <div class="newsletter">
+                            <input type="email" class="newsletter-input" placeholder="Enter your email">
+                            <button class="newsletter-btn"><i class="bi bi-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <hr class="footer-divider">
+                <div class="footer-bottom">
+                    <p>&copy; 2024 EchoCart. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
                     </div>
                 </div>
             </div>
@@ -353,6 +335,19 @@
                         <form id="login-form">
                             <div id="login-error" class="alert alert-danger d-none" role="alert">
                                 Invalid email or password. Please try again.
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Login as</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="userMode" id="customerMode" value="customer" checked>
+                                        <label class="form-check-label" for="customerMode">Customer</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="userMode" id="adminMode" value="admin">
+                                        <label class="form-check-label" for="adminMode">Admin</label>
+                                    </div>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="loginEmail" class="form-label">Email address</label>
@@ -439,11 +434,74 @@
         </div>
     </div>
 
+    <!-- Cart Alerts -->
+    <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1060; max-width: 300px;">
+        <div id="main-cart-alerts"></div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">
+                        <i class="bi bi-cart-fill me-2"></i>Shopping Cart
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cart-alerts"></div>
+                    <div id="cart-empty" class="text-center py-5" style="display: none;">
+                        <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+                        <h4 class="text-muted">Your cart is empty</h4>
+                        <p class="text-muted">Add some products to get started!</p>
+                    </div>
+                    <div id="cart-items">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Code</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>Subtotal</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cart-table-body">
+                                    <!-- Cart items will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="cart-footer">
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Total: <span id="cart-total" class="text-success">₹0.00</span></h5>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-danger" id="clear-cart-btn">
+                                <i class="bi bi-trash me-1"></i>Clear Cart
+                            </button>
+                            <button type="button" class="btn btn-custom flex-fill" id="checkout-btn">
+                                <i class="bi bi-credit-card me-1"></i>Checkout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <!-- Custom JavaScript -->
     <script src="js/main.js" defer></script>
+    <script src="js/cart.js" defer></script>
+    <script src="js/product.js" defer></script>
 
 </body>
 </html>
