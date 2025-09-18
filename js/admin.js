@@ -48,7 +48,97 @@ const editProductForm = document.getElementById('edit-product-form');
 // Load products on page load
 document.addEventListener('DOMContentLoaded', function() {
     loadProducts();
+    setupTabs();
 });
+
+// Tab functionality
+function setupTabs() {
+    const usersTabBtn = document.getElementById('users-tab-btn');
+    const productsTabBtn = document.getElementById('products-tab-btn');
+    const usersSection = document.getElementById('users-section');
+    const productsSection = document.getElementById('products-section');
+    
+    usersTabBtn.addEventListener('click', () => {
+        usersTabBtn.classList.remove('btn-outline-primary');
+        usersTabBtn.classList.add('btn-custom');
+        productsTabBtn.classList.remove('btn-custom');
+        productsTabBtn.classList.add('btn-outline-primary');
+        usersSection.style.display = 'block';
+        productsSection.style.display = 'none';
+        loadUsers();
+    });
+    
+    productsTabBtn.addEventListener('click', () => {
+        productsTabBtn.classList.remove('btn-outline-primary');
+        productsTabBtn.classList.add('btn-custom');
+        usersTabBtn.classList.remove('btn-custom');
+        usersTabBtn.classList.add('btn-outline-primary');
+        productsSection.style.display = 'block';
+        usersSection.style.display = 'none';
+    });
+}
+
+// Load users function
+async function loadUsers() {
+    showLoading(true);
+    
+    try {
+        const response = await fetch('http://localhost:8081/api/admin/users');
+        if (response.ok) {
+            const users = await response.json();
+            displayUsers(users);
+        } else {
+            console.error('Failed to load users:', response.status);
+        }
+    } catch (error) {
+        console.error('Error loading users:', error);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Display users function
+function displayUsers(users) {
+    const tbody = document.getElementById('users-table-body');
+    tbody.innerHTML = '';
+    
+    users.forEach((user, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${user.name || user.username}</td>
+            <td>${user.email}</td>
+            <td>
+                <span class="password-hidden" id="pwd-${user.id}">••••••••</span>
+                <span class="password-visible d-none" id="pwd-show-${user.id}">${user.password}</span>
+                <button class="btn btn-sm btn-outline-secondary ms-2" onclick="togglePassword(${user.id})">
+                    <i class="bi bi-eye" id="eye-${user.id}"></i>
+                </button>
+            </td>
+            <td><span class="badge ${user.isAdmin ? 'bg-danger' : 'bg-primary'}">${user.isAdmin ? 'Admin' : 'Customer'}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Toggle password visibility
+function togglePassword(userId) {
+    const hiddenSpan = document.getElementById(`pwd-${userId}`);
+    const visibleSpan = document.getElementById(`pwd-show-${userId}`);
+    const eyeIcon = document.getElementById(`eye-${userId}`);
+    
+    if (hiddenSpan.classList.contains('d-none')) {
+        hiddenSpan.classList.remove('d-none');
+        visibleSpan.classList.add('d-none');
+        eyeIcon.classList.remove('bi-eye-slash');
+        eyeIcon.classList.add('bi-eye');
+    } else {
+        hiddenSpan.classList.add('d-none');
+        visibleSpan.classList.remove('d-none');
+        eyeIcon.classList.remove('bi-eye');
+        eyeIcon.classList.add('bi-eye-slash');
+    }
+}
 
 // Logout functionality
 logoutBtn.addEventListener('click', function(e) {
@@ -62,11 +152,18 @@ addProductForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
     const productData = {
-        name: document.getElementById('productName').value,
+        name: document.getElementById('productName').value.trim(),
+        description: document.getElementById('productDescription').value.trim(),
         price: parseFloat(document.getElementById('productPrice').value),
-        description: document.getElementById('productDescription').value,
-        image: document.getElementById('productImage').value
+        categoryId: parseInt(document.getElementById('productCategory').value),
+        stockQuantity: parseInt(document.getElementById('productStock').value) || 100
     };
+    
+    // Validate required fields
+    if (!productData.name || !productData.description || !productData.price || !productData.categoryId) {
+        showAlert('Please fill in all required fields', 'danger');
+        return;
+    }
     
     addProduct(productData);
 });
@@ -74,13 +171,14 @@ addProductForm.addEventListener('submit', function(e) {
 // Edit product form handler
 editProductForm.addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const productData = {
         id: parseInt(document.getElementById('editProductId').value),
         name: document.getElementById('editProductName').value,
-        price: parseFloat(document.getElementById('editProductPrice').value),
         description: document.getElementById('editProductDescription').value,
-        image: document.getElementById('editProductImage').value
+        price: parseFloat(document.getElementById('editProductPrice').value),
+        categoryId: parseInt(document.getElementById('editProductCategory').value),
+        stockQuantity: parseInt(document.getElementById('editProductStock').value) || 100
     };
     
     updateProduct(productData);
@@ -90,27 +188,23 @@ editProductForm.addEventListener('submit', function(e) {
 async function loadProducts() {
     showLoading(true);
     
-    // Simulate API call
-    setTimeout(async () => {
-        // In real implementation, fetch from: /api/admin/products
-        await fetch('http://localhost:8081/api/products', {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            products = data.products || products;
+    try {
+        const response = await fetch('http://localhost:8081/api/products');
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Loaded products:', data);
+            products = Array.isArray(data) ? data : (data.products || products);
             displayProducts(products);
-        })
-        .catch(() => {
-            // Use sample data if API fails
+        } else {
+            console.error('Failed to load products:', response.status);
             displayProducts(products);
-        })
-        .finally(() => {
-            showLoading(false);
-        });
-    }, 500);
+        }
+    } catch (error) {
+        console.error('Error loading products:', error);
+        displayProducts(products);
+    } finally {
+        showLoading(false);
+    }
 }
 
 // Display products function
@@ -156,41 +250,28 @@ function createProductCard(product) {
 async function addProduct(productData) {
     showLoading(true);
     
-    // In real implementation, send to: /api/admin/products
-    await fetch('http://localhost:8081/api/products', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-        },
-        body: JSON.stringify(productData)
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
+    try {
+        const response = await fetch('http://localhost:8081/api/products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+        });
+        
+        if (response.ok) {
             showAlert('Product added successfully!', 'success');
             addProductForm.reset();
             bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
             loadProducts();
         } else {
-            showAlert('Failed to add product.', 'danger');
+            showAlert('Failed to add product to backend', 'danger');
         }
-    })
-    .catch(() => {
-        // Demo: add to local array
-        const newProduct = {
-            ...productData,
-            id: Math.max(...products.map(p => p.id)) + 1
-        };
-        products.push(newProduct);
-        displayProducts(products);
-        showAlert('Product added successfully!', 'success');
-        addProductForm.reset();
-        bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
-    })
-    .finally(() => {
+    } catch (error) {
+        showAlert('Server connection failed', 'danger');
+    } finally {
         showLoading(false);
-    });
+    }
 }
 
 // Edit product function
@@ -201,9 +282,11 @@ function editProduct(productId) {
     // Populate edit form
     document.getElementById('editProductId').value = product.id;
     document.getElementById('editProductName').value = product.name;
-    document.getElementById('editProductPrice').value = product.price;
+    document.getElementById('editProductCategory').value = product.categoryId || 1;
     document.getElementById('editProductDescription').value = product.description;
-    document.getElementById('editProductImage').value = product.image;
+    document.getElementById('editProductPrice').value = product.price;
+    document.getElementById('editProductStock').value = product.stockQuantity || 100;
+    document.getElementById('editProductImage').value = product.image || 'https://via.placeholder.com/400';
     
     // Show edit modal
     new bootstrap.Modal(document.getElementById('editProductModal')).show();

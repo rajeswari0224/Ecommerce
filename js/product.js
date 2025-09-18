@@ -57,9 +57,7 @@ async function handleProductSubmission(e) {
         description: document.getElementById('productDescription').value.trim(),
         price: parseFloat(document.getElementById('productPrice').value),
         categoryId: categoryMap[document.getElementById('productCategory').value],
-        stockQuantity: 100, // Default stock
-        code: document.getElementById('productCode').value.trim(),
-        imageUrl: document.getElementById('productImage').value.trim()
+        stockQuantity: parseInt(document.getElementById('productStock').value) || 100
     };
     
     // Validate form data
@@ -97,8 +95,7 @@ async function handleProductSubmission(e) {
             // Store product in localStorage for backup
             const productData = response.product;
             productData.category = document.getElementById('productCategory').value;
-            productData.code = formData.code;
-            productData.imageUrl = formData.imageUrl;
+            productData.imageUrl = document.getElementById('productImage').value.trim();
             
             storeProduct(productData);
             

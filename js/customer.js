@@ -99,8 +99,8 @@ function createProductCard(product) {
                 <h5 class="card-title">${product.name}</h5>
                 <p class="card-text text-muted flex-grow-1">${product.description}</p>
                 <div class="d-flex justify-content-between align-items-center mt-auto">
-                    <span class="product-price">$${product.price.toFixed(2)}</span>
-                    <button class="btn btn-custom btn-sm" onclick="addToCart(${product.id})">
+                    <span class="product-price">₹${product.price.toFixed(2)}</span>
+                    <button class="btn btn-custom btn-sm" onclick="addToCart(${product.id}, '${product.name}', 'PRD${product.id}', '${product.description}', ${product.price}, '${product.image}')">
                         <i class="bi bi-cart-plus me-1"></i>Add to Cart
                     </button>
                 </div>
@@ -111,29 +111,13 @@ function createProductCard(product) {
     return col;
 }
 
-// Add to cart function (placeholder)
-function addToCart(productId) {
-    // In real implementation, send to: /api/cart/add
-    fetch('/api/cart/add', {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-        },
-        body: JSON.stringify({ productId, quantity: 1 })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            showAlert('Product added to cart!', 'success');
-        } else {
-            showAlert('Failed to add product to cart.', 'danger');
-        }
-    })
-    .catch(() => {
-        // Demo: always show success
-        showAlert('Product added to cart!', 'success');
-    });
+// Add to cart function - integrated with CartManager
+function addToCart(id, name, code, description, price, image) {
+    if (window.cartManager) {
+        window.cartManager.addToCart(id, name, code, description, price, image);
+    } else {
+        showAlert('Cart system not loaded', 'danger');
+    }
 }
 
 // Show loading spinner

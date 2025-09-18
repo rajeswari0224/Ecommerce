@@ -304,6 +304,7 @@ class CartManager {
 
 // Initialize cart manager
 const cartManager = new CartManager();
+window.cartManager = cartManager; // Make globally accessible
 
 // Global function for add to cart buttons
 function addToCart(id, name, code, description, price, image) {

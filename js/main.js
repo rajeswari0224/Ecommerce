@@ -1,143 +1,203 @@
-// LOGIN FORM VALIDATION & SUBMIT
+// Utility functions
+const API_BASE = 'http://localhost:8081/api';
+
+const apiRequest = async (url, options = {}) => {
+    const response = await fetch(url, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    return response.json();
+};
+
+const showError = (element, message) => {
+    element.textContent = message;
+    element.classList.remove('d-none');
+};
+
+const getErrorMessage = (error) => {
+    if (error.message.includes('Failed to fetch')) {
+        return 'Cannot connect to server. Please check if the backend is running on port 8081.';
+    }
+    if (error.message.includes('HTTP 401')) return 'Invalid email or password. Please try again.';
+    if (error.message.includes('HTTP 400')) return 'Invalid data. Please check your inputs.';
+    if (error.message.includes('HTTP 409')) return 'This email is already registered. Please use a different email.';
+    if (error.message.includes('HTTP 500')) return 'Server error. Please try again later.';
+    return `Request failed: ${error.message}`;
+};
+
+// LOGIN FORM
 const loginForm = document.getElementById('login-form');
 if (loginForm) {
-    loginForm.addEventListener('submit', function(e) {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
-        const userMode = document.querySelector('input[name="userMode"]:checked').value;
         const errorDiv = document.getElementById('login-error');
         errorDiv.classList.add('d-none');
         
-        // Simple validation
         if (!email || !password) {
-            errorDiv.textContent = 'Please enter both email and password.';
-            errorDiv.classList.remove('d-none');
-            return;
+            return showError(errorDiv, 'Please enter both email and password.');
         }
         
-        // Send to backend API
-        fetch('http://localhost:8081/api/users/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
+        try {
+            const data = await apiRequest(`${API_BASE}/users/login`, {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            
             if (data.success) {
-                // Store user info and redirect based on role from backend
-                localStorage.setItem('userId', data.userId);
-                localStorage.setItem('userMode', data.isAdmin ? 'admin' : 'customer');
-                localStorage.setItem('userEmail', data.email);
-                localStorage.setItem('username', data.username);
-                localStorage.setItem('userToken', 'logged-in-' + data.userId); // Add token for auth check
+                Object.entries({
+                    userId: data.userId,
+                    userMode: data.isAdmin ? 'admin' : 'customer',
+                    userEmail: data.email,
+                    username: data.username,
+                    userToken: `logged-in-${data.userId}`
+                }).forEach(([key, value]) => localStorage.setItem(key, value));
                 
-                if (data.isAdmin) {
-                    window.location.href = 'admin.html';
-                } else {
-                    window.location.href = 'customer.html';
-                }
+                window.location.href = data.isAdmin ? 'admin.html' : 'customer.html';
             } else {
-                errorDiv.textContent = data.message || 'Invalid email or password.';
-                errorDiv.classList.remove('d-none');
+                showError(errorDiv, data.message || 'Invalid email or password.');
             }
-        })
-        .catch((error) => {
+        } catch (error) {
             console.error('Login error:', error);
-            if (error.message.includes('Failed to fetch')) {
-                errorDiv.textContent = 'Cannot connect to server. Please check if the backend is running on port 8081.';
-            } else if (error.message.includes('HTTP 401')) {
-                errorDiv.textContent = 'Invalid email or password. Please try again.';
-            } else if (error.message.includes('HTTP 500')) {
-                errorDiv.textContent = 'Server error. Please try again later.';
-            } else {
-                errorDiv.textContent = 'Login failed: ' + error.message;
-            }
-            errorDiv.classList.remove('d-none');
-        });
+            showError(errorDiv, getErrorMessage(error));
+        }
     });
 }
 
-// REGISTER FORM VALIDATION & SUBMIT
-const registerForm = document.getElementById('register-form');
-if (registerForm) {
-    registerForm.addEventListener('submit',async function(e) {
+// CUSTOMER REGISTER FORM
+const customerRegisterForm = document.getElementById('customer-register-form');
+if (customerRegisterForm) {
+    customerRegisterForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = document.getElementById('registerName').value.trim();
-        const email = document.getElementById('registerEmail').value.trim();
-        const password = document.getElementById('registerPassword').value.trim();
-        const successDiv = document.getElementById('register-success');
+        const name = document.getElementById('customerRegisterName').value.trim();
+        const email = document.getElementById('customerRegisterEmail').value.trim();
+        const password = document.getElementById('customerRegisterPassword').value.trim();
+        
+        console.log('Form values:', { name, email, password });
+        const successDiv = document.getElementById('customer-register-success');
         successDiv.classList.add('d-none');
-        // Simple validation
+        
         if (!name || !email || !password) {
-            successDiv.textContent = 'Please fill all fields.';
-            successDiv.classList.remove('d-none');
             successDiv.classList.remove('alert-success');
             successDiv.classList.add('alert-danger');
-            return;
+            return showError(successDiv, 'Please fill all fields.');
         }
-        // Send to backend (Java REST API)
-        await fetch('http://localhost:8081/api/users/register/customer', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
-        })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
-            if (data.success) {
-                successDiv.textContent = 'Registration successful! You can now log in.';
+        
+        if (password.length < 6) {
+            successDiv.classList.remove('alert-success');
+            successDiv.classList.add('alert-danger');
+            return showError(successDiv, 'Password must be at least 6 characters long.');
+        }
+        
+        console.log('Sending customer registration:', { username: name, email, password });
+        
+        try {
+            const response = await fetch(`${API_BASE}/users/register/customer`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, email: email, password: password })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                successDiv.textContent = 'Customer account created! You can now log in.';
                 successDiv.classList.remove('d-none', 'alert-danger');
                 successDiv.classList.add('alert-success');
-                registerForm.reset();
+                customerRegisterForm.reset();
             } else {
-                successDiv.textContent = data.message || 'Registration failed.';
-                successDiv.classList.remove('d-none', 'alert-success');
+                successDiv.classList.remove('alert-success');
                 successDiv.classList.add('alert-danger');
+                if (response.status === 409) {
+                    showError(successDiv, 'This email is already registered. Please use a different email.');
+                } else {
+                    showError(successDiv, data.message || 'Registration failed.');
+                }
             }
-        })
-        .catch((error) => {
-            console.error('Registration error:', error);
-            if (error.message.includes('Failed to fetch')) {
-                successDiv.textContent = 'Cannot connect to server. Please check if the backend is running on port 8081.';
-            } else if (error.message.includes('HTTP 400')) {
-                successDiv.textContent = 'Invalid registration data. Please check your inputs.';
-            } else if (error.message.includes('HTTP 409')) {
-                successDiv.textContent = 'Email already exists. Please use a different email.';
-            } else {
-                successDiv.textContent = 'Registration failed: ' + error.message;
-            }
-            successDiv.classList.remove('d-none', 'alert-success');
+
+        } catch (error) {
+            console.error('Customer registration error:', error);
+            successDiv.classList.remove('alert-success');
             successDiv.classList.add('alert-danger');
-        });
+            showError(successDiv, getErrorMessage(error));
+        }
+    });
+}
+
+// ADMIN REGISTER FORM
+const adminRegisterForm = document.getElementById('admin-register-form');
+if (adminRegisterForm) {
+    adminRegisterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('adminRegisterName').value.trim();
+        const email = document.getElementById('adminRegisterEmail').value.trim();
+        const password = document.getElementById('adminRegisterPassword').value.trim();
+        const adminKey = document.getElementById('adminRegisterKey').value.trim();
+        
+        console.log('Form values:', { name, email, password, adminKey });
+        const successDiv = document.getElementById('admin-register-success');
+        successDiv.classList.add('d-none');
+        
+        if (!name || !email || !password || !adminKey) {
+            successDiv.classList.remove('alert-success');
+            successDiv.classList.add('alert-danger');
+            return showError(successDiv, 'Please fill all fields including admin security key.');
+        }
+        
+        if (password.length < 6) {
+            successDiv.classList.remove('alert-success');
+            successDiv.classList.add('alert-danger');
+            return showError(successDiv, 'Password must be at least 6 characters long.');
+        }
+        
+        console.log('Sending admin registration:', { username: name, email, password, adminKey });
+        
+        try {
+            const response = await fetch(`${API_BASE}/users/register/admin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, email: email, password: password, adminKey: adminKey })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                successDiv.textContent = 'Admin account created! You can now log in.';
+                successDiv.classList.remove('d-none', 'alert-danger');
+                successDiv.classList.add('alert-success');
+                adminRegisterForm.reset();
+            } else {
+                successDiv.classList.remove('alert-success');
+                successDiv.classList.add('alert-danger');
+                if (response.status === 409) {
+                    showError(successDiv, 'This email is already registered. Please use a different email.');
+                } else {
+                    showError(successDiv, data.message || 'Invalid admin key or registration failed.');
+                }
+            }
+
+        } catch (error) {
+            console.error('Admin registration error:', error);
+            successDiv.classList.remove('alert-success');
+            successDiv.classList.add('alert-danger');
+            showError(successDiv, getErrorMessage(error));
+        }
     });
 }
 
 // SEARCH FUNCTIONALITY
 const searchBar = document.getElementById('search-bar');
 if (searchBar) {
-    searchBar.addEventListener('input', function(e) {
+    searchBar.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
-        const productItems = document.querySelectorAll('.product-item');
-        
-        productItems.forEach(item => {
-            const title = item.querySelector('.card-title').textContent.toLowerCase();
-            const description = item.querySelector('.card-text').textContent.toLowerCase();
-            
-            if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = searchTerm === '' ? 'block' : 'none';
-            }
+        document.querySelectorAll('.product-item').forEach(item => {
+            const title = item.querySelector('.card-title')?.textContent.toLowerCase() || '';
+            const description = item.querySelector('.card-text')?.textContent.toLowerCase() || '';
+            item.style.display = !searchTerm || title.includes(searchTerm) || description.includes(searchTerm) ? 'block' : 'none';
         });
     });
 }
+
+

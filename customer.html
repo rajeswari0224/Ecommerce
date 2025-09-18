@@ -19,6 +19,12 @@
                 EchoCart
             </a>
             <div class="navbar-nav ms-auto">
+                <div class="nav-item me-3">
+                    <a class="nav-link position-relative" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+                        <i class="bi bi-cart-fill me-1"></i>Cart
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-badge" style="display: none;">0</span>
+                    </a>
+                </div>
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle me-1"></i> Customer
@@ -51,7 +57,52 @@
         <div id="alert-container"></div>
     </div>
 
+    <!-- Cart Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-cart-fill me-2"></i>Shopping Cart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cart-alerts"></div>
+                    <div id="cart-empty" class="text-center py-5" style="display: none;">
+                        <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+                        <h4 class="text-muted">Your cart is empty</h4>
+                    </div>
+                    <div id="cart-items">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th><th>Action</th></tr>
+                                </thead>
+                                <tbody id="cart-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="cart-footer">
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Total: <span id="cart-total" class="text-success">₹0.00</span></h5>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-outline-danger" id="clear-cart-btn"><i class="bi bi-trash me-1"></i>Clear Cart</button>
+                            <button type="button" class="btn btn-custom flex-fill" id="checkout-btn"><i class="bi bi-credit-card me-1"></i>Checkout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1060; max-width: 300px;">
+        <div id="main-cart-alerts"></div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/cart.js"></script>
     <script src="js/customer.js"></script>
 </body>
 </html>

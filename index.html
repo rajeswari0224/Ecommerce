@@ -12,6 +12,28 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <style>
+    .particle {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background: radial-gradient(circle, #ffd700 0%, #ffed4e 50%, #fff59d 100%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        box-shadow: 0 0 6px #ffd700;
+    }
+    @keyframes particleBurst {
+        0% { 
+            transform: translate(0, 0) scale(1);
+            opacity: 1;
+        }
+        100% { 
+            transform: translate(var(--dx), var(--dy)) scale(0);
+            opacity: 0;
+        }
+    }
+    </style>
 </head>
 <body>
 
@@ -90,65 +112,7 @@
             </nav>
         </header>
 
-        <!-- Admin Product Form (conditionally rendered) -->
-        <section id="admin-form-section" class="py-4" style="display: none; background-color: var(--secondary-bg);">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Add New Product</h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="form-alerts"></div>
-                                <form id="product-form">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="productName" class="form-label">Product Name</label>
-                                            <input type="text" class="form-control" id="productName" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="productCode" class="form-label">Product Code</label>
-                                            <input type="text" class="form-control" id="productCode" required>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="productCategory" class="form-label">Category</label>
-                                        <select class="form-select" id="productCategory" required>
-                                            <option value="">Select Category</option>
-                                            <option value="electronics">Electronics</option>
-                                            <option value="apparel">Fashion</option>
-                                            <option value="home-kitchen">Home & Kitchen</option>
-                                            <option value="books">Books</option>
-                                            <option value="sports">Sports & Fitness</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="productDescription" class="form-label">Description</label>
-                                        <textarea class="form-control" id="productDescription" rows="3" required></textarea>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="productPrice" class="form-label">Price (₹)</label>
-                                            <input type="number" class="form-control" id="productPrice" min="0" step="0.01" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="productImage" class="form-label">Image URL</label>
-                                            <input type="url" class="form-control" id="productImage" required>
-                                        </div>
-                                    </div>
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-custom">
-                                            <i class="bi bi-plus-lg me-2"></i>Add Product
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+
 
         <!-- Main Content -->
         <main>
@@ -333,22 +297,7 @@
                     </div>
                     <div class="modal-body">
                         <form id="login-form">
-                            <div id="login-error" class="alert alert-danger d-none" role="alert">
-                                Invalid email or password. Please try again.
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Login as</label>
-                                <div class="d-flex gap-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="userMode" id="customerMode" value="customer" checked>
-                                        <label class="form-check-label" for="customerMode">Customer</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="userMode" id="adminMode" value="admin">
-                                        <label class="form-check-label" for="adminMode">Admin</label>
-                                    </div>
-                                </div>
-                            </div>
+                            <div id="login-error" class="alert alert-danger d-none" role="alert"></div>
                             <div class="mb-3">
                                 <label for="loginEmail" class="form-label">Email address</label>
                                 <input type="email" class="form-control" id="loginEmail" required placeholder="user@example.com">
@@ -379,24 +328,62 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="register-form">
-                            <div id="register-success" class="alert alert-success d-none" role="alert">
-                                Registration successful! You can now log in.
+                        <!-- Account Type Tabs -->
+                        <ul class="nav nav-tabs mb-3" id="registerTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active fw-bold text-dark" id="customer-register-tab" data-bs-toggle="tab" data-bs-target="#customer-register" type="button" role="tab" style="color: #000 !important;">Customer Account</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold text-dark" id="admin-register-tab" data-bs-toggle="tab" data-bs-target="#admin-register" type="button" role="tab" style="color: #000 !important;">Admin Account</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content" id="registerTabContent">
+                            <!-- Customer Registration -->
+                            <div class="tab-pane fade show active" id="customer-register" role="tabpanel">
+                                <form id="customer-register-form">
+                                    <div id="customer-register-success" class="alert alert-success d-none" role="alert"></div>
+                                    <div class="mb-3">
+                                        <label for="customerRegisterName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="customerRegisterName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="customerRegisterEmail" class="form-label">Email address</label>
+                                        <input type="email" class="form-control" id="customerRegisterEmail" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="customerRegisterPassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="customerRegisterPassword" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-custom w-100">Create Customer Account</button>
+                                </form>
                             </div>
-                            <div class="mb-3">
-                                <label for="registerName" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="registerName" required>
+                            
+                            <!-- Admin Registration -->
+                            <div class="tab-pane fade" id="admin-register" role="tabpanel">
+                                <form id="admin-register-form">
+                                    <div id="admin-register-success" class="alert alert-success d-none" role="alert"></div>
+                                    <div class="mb-3">
+                                        <label for="adminRegisterName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="adminRegisterName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="adminRegisterEmail" class="form-label">Email address</label>
+                                        <input type="email" class="form-control" id="adminRegisterEmail" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="adminRegisterPassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="adminRegisterPassword" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="adminRegisterKey" class="form-label">Admin Security Key</label>
+                                        <input type="password" class="form-control" id="adminRegisterKey" required placeholder="Enter admin security key">
+                                        <div class="form-text">Contact system administrator for the security key</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-custom w-100">Create Admin Account</button>
+                                </form>
                             </div>
-                            <div class="mb-3">
-                                <label for="registerEmail" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="registerEmail" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="registerPassword" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="registerPassword" required>
-                            </div>
-                            <button type="submit" class="btn btn-custom w-100">Create Account</button>
-                        </form>
+                        </div>
                     </div>
                     <div class="modal-footer justify-content-center">
                         <p class="text-muted small mb-0">Already have an account? <a href="#" class="form-text-link" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">Login here</a></p>
@@ -502,6 +489,41 @@
     <script src="js/main.js" defer></script>
     <script src="js/cart.js" defer></script>
     <script src="js/product.js" defer></script>
+    
+    <script>
+    function createParticleBurst(x, y) {
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const angle = (i * 24) * Math.PI / 180;
+            const distance = 60 + Math.random() * 40;
+            const duration = 0.8;
+            
+            particle.style.left = (x - 4) + 'px';
+            particle.style.top = (y - 4) + 'px';
+            particle.style.setProperty('--dx', Math.cos(angle) * distance + 'px');
+            particle.style.setProperty('--dy', Math.sin(angle) * distance + 'px');
+            particle.style.animation = `particleBurst ${duration}s ease-out forwards`;
+            
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            document.querySelectorAll('#registerTabs button').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    const rect = e.target.getBoundingClientRect();
+                    const x = rect.left + rect.width / 2;
+                    const y = rect.top + rect.height / 2;
+                    createParticleBurst(x, y);
+                });
+            });
+        }, 500);
+    });
+    </script>
 
 </body>
 </html>
